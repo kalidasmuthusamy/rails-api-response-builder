@@ -2,7 +2,7 @@
 module Api
   module ResponseBuilder
     # Class which helps in building messges for api response
-    class Messages < Base
+    class Messages < ::Api::ResponseBuilder::Base
       attr_accessor :messages
 
       def initialize(resource, config = {})
@@ -16,8 +16,8 @@ module Api
       def set_messages
         add_errors_if_any
         return unless other_exception?
-        exception = ApiException.internal_server_error
-        @messages[:errors] = ApiException.new(exception, resource.message).
+        exception = ::Api::Exception.internal_server_error
+        @messages[:errors] = ::Api::Exception.new(exception, resource.message).
           full_messages
       end
 

@@ -14,7 +14,7 @@ module Api
       protected
 
       def active_model_object?
-        @resource.is_a?(ActiveRecord::Base)
+        @resource.is_a?(::ActiveRecord::Base)
       end
 
       def hash_object?
@@ -26,7 +26,7 @@ module Api
       end
 
       def collection?
-        @resource.is_a?(ActiveRecord::Relation) || @resource.is_a?(Array)
+        @resource.is_a?(::ActiveRecord::Relation) || @resource.is_a?(Array)
       end
 
       def exception?
@@ -38,7 +38,7 @@ module Api
       end
 
       def api_exception?
-        @resource.is_a?(ApiException)
+        @resource.is_a?(::Api::Exception)
       end
 
       def invalid_resource?

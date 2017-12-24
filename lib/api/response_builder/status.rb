@@ -2,7 +2,7 @@
 module Api
   module ResponseBuilder
     # Class which helps in building status of api response
-    class Status < Base
+    class Status < ::Api::ResponseBuilder::Base
       attr_accessor :status_message
 
       def initialize(resource, config = {})

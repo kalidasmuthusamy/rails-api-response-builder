@@ -2,7 +2,7 @@
 module Api
   module ResponseBuilder
     # Class which helps in building api response body
-    class Data < Base
+    class Data < ::Api::ResponseBuilder::Base
       attr_accessor :data
 
       def initialize(resource, config = {})
@@ -21,7 +21,7 @@ module Api
 
       def set_collection_data
         return unless collection?
-        @data = ActiveModel::Serializer::CollectionSerializer.
+        @data = ::ActiveModel::Serializer::CollectionSerializer.
           new(resource, config)
       end
 

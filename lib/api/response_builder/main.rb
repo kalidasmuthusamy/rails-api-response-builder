@@ -18,8 +18,8 @@ module Api
 
       def set_response
         prepare_response
-        response_data = ResponseBuilder::Data.new(resource, config).data
-        messages = ResponseBuilder::Messages.new(resource, config).messages
+        response_data = ::Api::ResponseBuilder::Data.new(resource, config).data
+        messages = ::Api::ResponseBuilder::Messages.new(resource, config).messages
 
         @response[:body] = response_data if response_data.present?
         @response[:messages] = messages if messages.present?
@@ -29,7 +29,7 @@ module Api
       end
 
       def prepare_response
-        status_msg = ResponseBuilder::Status.new(resource, config).status_message
+        status_msg = ::Api::ResponseBuilder::Status.new(resource, config).status_message
         @response = status_msg.present? ? status_msg : {}
       end
     end
