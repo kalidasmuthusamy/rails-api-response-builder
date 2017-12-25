@@ -170,6 +170,20 @@ By taking advantage of Ruby's inheritance and Rails's app structure, few instanc
   end
 
 ```
+
+#### Api Exceptions
+
+Following exceptions are handled by this gem as there are the most commonly used.
+
+EXCEPTION | HTTP Status Code
+------------ | -------------
+INTERNAL_SERVER_ERROR | :internal_server_error (500)
+RECORD_NOT_FOUND | :not_found (404)
+RECORD_INVALID | ::unprocessable_entity (422)
+RECORD_NOT_DESTROYED | :forbidden (403)
+FORBIDDEN_RESOURCE | :forbidden (403)
+UNAUTHORIZED_ACCESS | :unauthorized (401)
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
