@@ -11,8 +11,74 @@ Pass a valid / invalid ActiveRecord object or an instance of ActiveRecord::Relat
 ## Example
 
 ```ruby
+#app/controllers/api/v1/application_controller.rb
+module Api
+  module V1
+    class ApplicationController < ActionController::API
+
+      def serializer_responder(resource, config = {})
+        response = ::Api::ResponseBuilder::Main.new(resource, config, params).response
+        render json: response, status: response[:status_code]
+      end
+
+    end
+  end
+end
+
+# app/serializers/v1/user_serializer.rb
+module V1
+  # Serializer for User model
+  class UserSerializer < ::ApplicationSerializer
+    attributes :id,
+      :firstname,
+      :lastname,
+      :phone_number,
+      :email
+  end
+end
 
 
+# app/controllers/api/v1/users_controller.rb
+module Api
+  module V1
+    # Defines endpoints for CRUD operations on user model
+    class UsersController < ApplicationController
+
+      def index
+        users = User.all
+        serializer_responder(users, serializer: ::V1::UserSerializer)
+      end
+
+    end
+  end
+end
+
+```
+
+Response for API endpoint `/api/v1/users` will be
+
+```json
+{
+  "status": "success", 
+  "body" :  
+    [
+      {
+        "id": 1,
+        "firstname": "Kalidas",
+        "lastname": "M",
+        "phone_number": "+919876543210",
+        "email": "kalidasm610@gmail.com"
+      },
+      {
+        "id": 2,
+        "firstname": "Dass",
+        "lastname": "Mk",
+        "phone_number": "+919876543211",
+        "email": ""
+      }
+    ],
+  "status_code": "ok"
+}
 ```
 
 ## Installation
