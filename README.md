@@ -171,7 +171,65 @@ By taking advantage of Ruby's inheritance and Rails's app structure, few instanc
 
 ```
 
-#### Api Exceptions
+
+#### Passing Additional Information to Response
+
+In some cases, meta information may be passed along with response. For example, passing total count of resources for pagination.
+
+In order to pass meta info, include `:meta` key-value pair in config object passed to `::Api::ResponseBuilder::Main`.
+It will be reflected in response object under `meta` key
+
+Note: 
+  * config[:serializer] should be `ActiveModel::Serializer` class (if serializer is not passed, it will serialize entire object)
+  * `config[:meta]` will accept only hash
+
+
+```ruby
+  # app/controllers/api/v1/users_controller.rb
+  def index
+    users = User.all
+
+    config = {}
+    config[:serializer] = UserSerializer
+    config[:meta] = { total_count: users.count }
+    serializer_responder(users, config)
+  end
+
+  # simple way
+  serializer_responder(users, { serializer: UserSerializer, meta: { total_count: users.count } })
+```
+
+##### Response
+
+```json
+  {
+  "status": "success", 
+  "body" :  
+    [
+      {
+        "id": 1,
+        "firstname": "Kalidas",
+        "lastname": "M",
+        "phone_number": "+919876543210",
+        "email": "kalidasm610@gmail.com"
+      },
+      {
+        "id": 2,
+        "firstname": "Dass",
+        "lastname": "Mk",
+        "phone_number": "+919876543211",
+        "email": ""
+      }
+    ],
+  "status_code": "ok",
+  "meta": {
+    "total_count": 2
+  }
+}
+```
+
+
+#### API Exceptions
 
 Following exceptions are handled by this gem as there are the most commonly used.
 
@@ -183,6 +241,99 @@ RECORD_INVALID | ::unprocessable_entity (422)
 RECORD_NOT_DESTROYED | :forbidden (403)
 FORBIDDEN_RESOURCE | :forbidden (403)
 UNAUTHORIZED_ACCESS | :unauthorized (401)
+
+For futher information, take a look at the [Code](https://github.com/kalidasm/rails-api-response-builder/blob/master/lib/api/exception.rb)
+
+
+##### Error Messages for API Exceptions
+
+All the error messages for these exceptions are rendered from I18n locales (`en.api_response.messages.#{key}`)
+
+Key represents lower-cased version of exception names listed above
+
+Example :
+
+```yml
+  en:
+    api_response:
+      messages:
+        internal_server_error: "Internal server error."
+        record_not_found: "The resource you are looking for does not exist."
+        record_invalid: "Validation Failed"
+        record_not_destroyed: "Failed to delete the resource"
+        forbidden_resource: "You don't have sufficient privileges to perform this operation"
+        unauthorized_access: "You are not authorized to perform this operation"
+```
+
+##### Raising API Exception inside controllers
+
+```ruby
+  def update_credit_score
+    # code to authorization info for current user
+    unless user_authorized?
+      raise ::Api::Exception.new(
+        ::Api::Exception.unauthorized_access
+      )
+    end
+    # Code to Update the credit score
+  end
+```
+
+Response would be
+
+```json
+  {
+    "status": "failure",
+    "messages": {
+      "errors": ["You are not authorized to perform this operation"]
+    },
+    "status_code": "unprocessable_entity",
+    "meta": {}
+  }
+```
+
+If you want to override the default error message in a specific scenario,
+
+```ruby
+  def update_credit_score
+    # code to authorization info for current user
+    unless user_authorized?
+      custom_error_message = 'You are not allowed to update credit score'
+
+      raise ::Api::Exception.new(
+        ::Api::Exception.unauthorized_access, custom_error_message
+      )
+    end
+    # Code to Update the credit score
+  end
+```
+```json
+  {
+    "status": "failure",
+    "messages": {
+      "errors": ["You are not allowed to update credit score"]
+    },
+    "status_code": "unprocessable_entity",
+    "meta": {}
+  }
+```
+
+#### Response Status - Failure / Success
+
+Response Object contains a key named `status`. It will have only any one of
+  * failure
+  * success
+
+Status will be `failure` when
+  * Resource has any errors
+  * Resource is an instance of `::Api::Exception`
+  * StandardError is raised
+
+Status will be `success` when
+  * Resource do not have any errors
+  * Resource is *not* an instance of `::Api::Exception`
+  * No Exception been raised
+
 
 ## Development
 
