@@ -25,9 +25,7 @@ module Api
         @response[:body] = response_data if response_data.present?
         @response[:messages] = messages if messages.present?
         @response[:status_code] = status_code
-        return unless config[:count].present?
-        @response[:meta] = { total_count: config[:count] }
-        @response[:meta].merge!(config[:meta].to_h)
+        @response[:meta] = (config[:meta].to_h)
       end
 
       def prepare_response
