@@ -2,6 +2,19 @@
 
 Module to build response object for Rails 5 API Applications.
 
+Pass a valid / invalid ActiveRecord object or an instance of ActiveRecord::Relation and get response object with following properties.
+* status (failure / success)
+* body
+* status_code (http_status_code)
+* messages (description of error)
+
+## Example
+
+```ruby
+
+
+```
+
 ## Installation
 
 Add this line to your application's Gemfile:
