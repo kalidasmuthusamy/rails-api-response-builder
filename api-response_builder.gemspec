@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["kalidasm610@gmail.com"]
 
   spec.summary       = %q{API Response Builder to keep controllers super-slim}
-  spec.description   = %q{Pass the queried objects in controller to this service along with serializer class. It will handle all scenarios, set the data and status code accordingly.}
+  spec.description   = %q{API Response Builder to keep controllers super-slim}
   spec.homepage      = "https://github.com/kalidasm/rails-api-response-builder"
   spec.license       = "MIT"
 
