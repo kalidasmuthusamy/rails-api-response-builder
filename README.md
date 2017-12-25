@@ -1,14 +1,17 @@
 # Api::ResponseBuilder
 
 Module to build response object for Rails 5 API Applications.
-
-Pass a valid / invalid ActiveRecord object or an instance of ActiveRecord::Relation and get response object with following properties.
-* status (failure / success)
-* body
-* status_code (http_status_code)
-* messages (description of error)
-
 Depends on `active_model_serializers` gem.
+
+Pass a valid / invalid ActiveRecord object or an instance of ActiveRecord::Relation and get response object in following structure.
+
+Properties | Description
+------------ | -------------
+status | 'failure' (or) 'success'
+body | Serialized Object
+messages | Error Description (if any)
+status_code | HTTP Status Code
+
 
 ## Example
 
