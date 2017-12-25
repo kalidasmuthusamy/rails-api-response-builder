@@ -8,6 +8,8 @@ Pass a valid / invalid ActiveRecord object or an instance of ActiveRecord::Relat
 * status_code (http_status_code)
 * messages (description of error)
 
+Depends on `active_model_serializers` gem.
+
 ## Example
 
 ```ruby
@@ -28,7 +30,7 @@ end
 # app/serializers/v1/user_serializer.rb
 module V1
   # Serializer for User model
-  class UserSerializer < ::ApplicationSerializer
+  class UserSerializer < ::ActiveModel::Serializer
     attributes :id,
       :firstname,
       :lastname,
@@ -109,7 +111,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/api-response_builder.
+Bug reports and pull requests are welcome on GitHub at https://github.com/kalidasm/api-response_builder.
 
 ## License
 
