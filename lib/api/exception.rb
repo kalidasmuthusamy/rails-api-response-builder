@@ -18,32 +18,42 @@ module Api
       @messages.values.flatten
     end
 
+    def status_code
+      @error_constant[:status_code]
+    end
+
     class << self
       def error_constants
         {
           INTERNAL_SERVER_ERROR: {
             message: t(:internal_server_error),
-            key: :internal_server_error
+            key: :internal_server_error,
+            status_code: :internal_server_error
           },
           RECORD_NOT_FOUND: {
             message: t(:record_not_found),
-            key: :record_not_found
+            key: :record_not_found,
+            status_code: :not_found
           },
           RECORD_INVALID: {
             message: t(:record_invalid),
-            key: :record_invalid
+            key: :record_invalid,
+            status_code: :unprocessable_entity
           },
           RECORD_NOT_DESTROYED: {
             message: t(:record_not_destroyed),
-            key: :record_not_destroyed
+            key: :record_not_destroyed,
+            status_code: :forbidden
           },
           FORBIDDEN_RESOURCE: {
             message: t(:forbidden_resource),
-            key: :forbidden_resource
+            key: :forbidden_resource,
+            status_code: :forbidden
           },
           UNAUTHORIZED_ACCESS: {
             message: t(:unauthorized_access),
-            key: :unauthorized_access
+            key: :unauthorized_access,
+            status_code: :unauthorized
           }
         }
       end
