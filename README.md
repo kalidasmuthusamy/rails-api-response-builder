@@ -242,14 +242,16 @@ RECORD_NOT_DESTROYED | :forbidden (403)
 FORBIDDEN_RESOURCE | :forbidden (403)
 UNAUTHORIZED_ACCESS | :unauthorized (401)
 
-For futher information, take a look at the [Code](https://github.com/kalidasm/rails-api-response-builder/blob/master/lib/api/exception.rb)
+For detailed information, feel free to dive into the [Code](https://github.com/kalidasm/rails-api-response-builder/blob/master/lib/api/exception.rb)
 
 
 ##### Error Messages for API Exceptions
 
-All the error messages for these exceptions are rendered from I18n locales (`en.api_response.messages.#{key}`)
+All the error messages are internalized using `Rails Internationalization (I18n) API`.
 
-Key represents lower-cased version of exception names listed above
+Exceptional messages are mapped under I18n locales (`en.api_response.messages.#{key}`).
+
+Key represents lower-cased version of exception names listed above.
 
 Example :
 
@@ -265,17 +267,26 @@ Example :
         unauthorized_access: "You are not authorized to perform this operation"
 ```
 
-##### Raising API Exception inside controllers
+##### Raising API Exception inside controller actions
 
 ```ruby
-  def update_credit_score
-    # code to authorization info for current user
-    unless user_authorized?
+  class CreditsController < ApplicationController
+    before_action :authorize_user, only: :update
+
+    def update
+      @credit.update(credit_params)
+    end
+
+    private
+
+    def authorize_user
+      return if user_authorized?
+
+      # Will be handled by rescue_from methods in application controller
       raise ::Api::Exception.new(
         ::Api::Exception.unauthorized_access
       )
     end
-    # Code to Update the credit score
   end
 ```
 
@@ -295,23 +306,21 @@ Response would be
 If you want to override the default error message in a specific scenario,
 
 ```ruby
-  def update_credit_score
-    # code to authorization info for current user
-    unless user_authorized?
-      custom_error_message = 'You are not allowed to update credit score'
+  private
 
-      raise ::Api::Exception.new(
-        ::Api::Exception.unauthorized_access, custom_error_message
-      )
-    end
-    # Code to Update the credit score
+  def authorize_user
+    return if user_authorized?
+
+    raise ::Api::Exception.new(
+      ::Api::Exception.unauthorized_access, "Looks like you are not authorized to update credit score"
+    )
   end
 ```
 ```json
   {
     "status": "failure",
     "messages": {
-      "errors": ["You are not allowed to update credit score"]
+      "errors": ["Looks like you are not authorized to update credit score"]
     },
     "status_code": "unprocessable_entity",
     "meta": {}
@@ -320,7 +329,7 @@ If you want to override the default error message in a specific scenario,
 
 #### Response Status - Failure / Success
 
-Response Object contains a key named `status`. It will have only any one of
+Response Object contains a key named `status`. It will have only any one of following types
   * failure
   * success
 
